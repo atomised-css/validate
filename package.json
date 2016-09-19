@@ -1,0 +1,36 @@
+{
+  "name": "validate",
+  "version": "1.0.0",
+  "description": "Checks whether atomisation produces an identical application of styles to the source CSS",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/atomised-css/validate.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/atomised-css/validate/issues"
+  },
+  "homepage": "https://github.com/atomised-css/validate#readme",
+  "dependencies": {
+    "babel-cli": "^6.14.0",
+    "babel-eslint": "^6.1.2",
+    "babel-plugin-transform-async-to-generator": "^6.8.0",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.14.0",
+    "jsdom": "^9.5.0",
+    "lodash": "^4.15.0",
+    "lodash.uniq": "^4.5.0",
+    "phantom": "^2.1.21",
+    "placebo-js": "^2.2.0",
+    "postcss": "^5.2.0",
+    "postcss-selector-parser": "^2.2.1",
+    "posthtml": "^0.9.0",
+    "satisfy.js": "^0.3.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "babel-node ./index.js"
+  }
+}
