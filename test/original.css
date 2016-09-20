@@ -2,14 +2,22 @@
 	color: red;
 }
 
-.blue, .red {
-	background-color: black;
+p.blue {
+	background-color: blue;
 }
 
-.red > p {
+p.blue.green {
+	background-color: bluegreen;
+}
+
+.red > p a  {
 	color: darkred;
 }
 
-.red:first-of-type {
+.red > p + a  {
+	color: darkred;
+}
+
+.red > p ~ a  {
 	color: darkred;
 }
