@@ -20,23 +20,14 @@
     "babel-plugin-transform-async-to-generator": "^6.8.0",
     "babel-plugin-transform-es2015-modules-commonjs": "^6.14.0",
     "emmet": "^1.6.0",
-    "jsdom": "^9.5.0",
-    "lodash": "^4.15.0",
     "lodash.uniq": "^4.5.0",
-    "phantom": "^2.1.21",
-    "placebo-js": "^2.2.0",
     "postcss": "^5.2.0",
-    "postcss-selector-parser": "^2.2.1",
-    "posthtml": "^0.9.0",
-    "posthtml-attrs-parser": "^0.1.1",
-    "posthtml-render": "^1.0.6",
-    "put-selector": "^0.3.6",
-    "satisfy.js": "^0.3.1"
+    "postcss-selector-parser": "^2.2.1"
   },
-  "scripts": {
-    "test": "jest --verbose --coverage",
-    "start": "babel-node ./index.js",
-    "lint": "eslint ."
+  "devDependencies": {
+    "babel-jest": "^15.0.0",
+    "jest": "^15.1.1",
+    "victorica": "0.0.2"
   },
   "jest": {
     "testPathIgnorePatterns": [
@@ -46,7 +37,9 @@
       "__helpers__"
     ]
   },
-  "devDependencies": {
-    "victorica": "0.0.2"
+  "scripts": {
+    "test": "jest --verbose --coverage",
+    "start": "babel-node ./index.js",
+    "lint": "eslint ."
   }
 }
