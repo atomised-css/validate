@@ -14,7 +14,6 @@ const emmetProfile = emmet.profile.create('test', {
 });
 
 const testString = '£337_H4X0R';
-const testTag = '£337_H4X0R';
 
 function getPseudoRoot(pseudo) {
     const prev = pseudo.prev();
@@ -30,10 +29,6 @@ function bumpInstance(node) {
         // if this node is already bumped, set count to 1 more of that
         count = parseInt(currentCount, 10) + 1;
     })}*${count}`;
-}
-
-function unquote(string) {
-    return string.replace(/"|'/g, '');
 }
 
 // converts a selector into something that emmet can use
@@ -78,8 +73,9 @@ function normaliseForEmmet(selector) {
                     pseudo.parent.removeChild(pseudo);
                     break;
                 }
-                case ':first-of-type': {
-                    // p:first-of-type => p+p
+                case ':first-of-type':
+                case ':last-of-type': {
+                    // p:first-of-type => p*2
                     bumpInstance(pseudoRoot);
                     pseudo.parent.removeChild(pseudo);
                     break;
@@ -87,6 +83,10 @@ function normaliseForEmmet(selector) {
                 case ':empty': {
                     // p:empty => p+p{£337_H4X0R}
                     pseudoRoot.value = `${pseudoRoot.value}{${testString}}+${pseudoRoot.value}`;
+                    pseudo.parent.removeChild(pseudo);
+                    break;
+                }
+                case ':not': {
                     pseudo.parent.removeChild(pseudo);
                     break;
                 }
@@ -122,22 +122,51 @@ function normaliseForEmmet(selector) {
             attribute.operator = '=';
         });
     }).process(selector, { lossless: false }).result
-        .replace(/:(first-child|last-child)/g, (match, pseudo, offset, string) =>
-            `[${pseudo}]${string.slice(offset + match.length)}+${string.slice(0, offset)}`
-        )
         .replace(/:(checked|disabled)/g, (match, pseudo, offset, string) =>
             `[${pseudo}]${string.slice(offset + match.length)}+${string.slice(0, offset)}`
         )
         .replace(/:(enabled)/g, (match, pseudo, offset, string) =>
             `[disabled]${string.slice(offset + match.length)}+${string.slice(0, offset)}`
         )
+        .replace(/:(invalid)/g, (match, pseudo, offset, string) => {
+            const type = string.match(/\[type=/) ? '' : '[type=email]';
+            return `${type}[value=asdfgh]`;
+        })
+        .replace(/:lang\(([^\)]+)\)/g, (match, lang) =>
+            `[lang=${lang}]`
+        )
+        .replace(/:(link)/g, () =>
+           '>a[href=\'.\']'
+        )
+        .replace(/:nth-child\(((odd|even|\d*|-)(n*)([\+-]*\d*))\)/g, (match, p1, p2, p3, p4, offset, string) => {
+            // odd/even
+            if (p1 === 'odd' || p1 === 'even') return '*3';
+
+            if (parseInt(p2, 10)) {
+                // 5n…
+                if (p3 === 'n') {
+                    // 5n
+                    if (!p4) return `*${parseInt(p2, 10) * 2}`;
+                    // 5n+1/5n-1
+                    return `*${(parseInt(p2, 10) * 2) + 1}`;
+                }
+                // 5
+                if (!p4) return `*${p2}`;
+            }
+
+            // -n+5
+            if (p2 === '-' && p4) return `*${parseInt(p4, 10) + 1}`;
+
+            // n+5/n-5
+            if (!p2 && p4) return `*${parseInt(p4, 10)}`;
+        })
 ;
     console.log(normalised, 'normalised');
     return normalised;
 }
 
-export default async (originalCSS) => {
-    return postcss().process(originalCSS).then(processedCSS => {
+export default async (originalCSS) =>
+    postcss().process(originalCSS).then(processedCSS => {
         const selectorPromises = [];
 
         processedCSS.root.walkRules((rule) => {
@@ -147,15 +176,13 @@ export default async (originalCSS) => {
         });
 
         return Promise.all(selectorPromises)
-            // .then(selectors => selectors.map(selector => selector.result))
-            .then(selectors => {
+            .then(selectors =>
                 // console.log(selectors);
-                return selectors;
-            })
+                selectors
+            )
             .then(selectors => uniq(selectors))
             .then(selectors => selectors.reduce((src, selector) =>
                 `${src} ${emmet.expandAbbreviation(selector, emmetProfile).replace(/\$\{0\}/g, '')}`
             , ''))
             .then(html => html.trim());
     });
-};

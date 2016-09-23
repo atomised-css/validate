@@ -89,14 +89,31 @@ it('nests siblings correctly', async () => {
     `);
 });
 
-it('expands pseudos correctly', async () => {
-    await test('p:empty {}', `<p>${testString}</p><p></p>`);
-    await test('p:first-child {}', '<div><p></p><p></p></div>');
-    await test('p:last-child {}', '<div><p></p><p></p></div>');
-    await test(':first-of-type {}', '<div></div><div></div>');
+fit('expands pseudos correctly', async () => {
     await test('input[type=radio]:checked {}', '<input type="radio" checked="checked"></input><input type="radio"></input>');
     await test('input:disabled {}', '<input disabled="disabled"></input><input></input>');
     await test('input:enabled {}', '<input disabled="disabled"></input><input></input>');
+    await test('input:invalid {}', '<input type="email" value="asdfgh"></input>');
+    await test('input[type=href]:invalid {}', '<input type="href" value="asdfgh"></input>');
+
+    await test('p:empty {}', `<p>${testString}</p><p></p>`);
+    await test('p:link {}', '<p><a href="."></a></p>');
+    await test('p:not(.p) {}', '<p></p>');
+    await test(':lang(fr) > q {}', '<div lang="fr"><q></q></div>');
+
+    await test('p:first-child {}', '<div><p></p><p></p></div>');
+    await test('p:last-child {}', '<div><p></p><p></p></div>');
+    await test('p:first-of-type {}', '<p></p><p></p>');
+    await test('p:last-of-type {}', '<p></p><p></p>');
+
+    await test('p:nth-child(even) {}', '<div><p></p><p></p><p></p></div>');
+    await test('p:nth-child(odd) {}', '<div><p></p><p></p><p></p></div>');
+    await test('p:nth-child(4) {}', '<div><p></p><p></p><p></p><p></p></div>');
+    await test('p:nth-child(4n) {}', '<div><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p></div>');
+    await test('p:nth-child(n+5) {}', '<div><p></p><p></p><p></p><p></p><p></p></div>');
+    await test('p:nth-child(-n+5) {}', '<div><p></p><p></p><p></p><p></p><p></p><p></p></div>');
+    await test('p:nth-child(4n+5) {}', '<div><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p></div>');
+    await test('p:nth-child(4n-5) {}', '<div><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p></div>');
 });
 
 it('expands complex selectors correctly', async () => {
