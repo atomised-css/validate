@@ -5,15 +5,15 @@
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/atomised-css/validate.git"
+    "url": "git+https://github.com/sndrs/validate.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/atomised-css/validate/issues"
+    "url": "https://github.com/sndrs/validate/issues"
   },
-  "homepage": "https://github.com/atomised-css/validate#readme",
+  "homepage": "https://github.com/sndrs/validate#readme",
   "dependencies": {
     "babel-cli": "^6.14.0",
     "babel-eslint": "^6.1.2",
